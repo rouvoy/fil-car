@@ -1,0 +1,4 @@
+Code applicatif en Scala des TDs/TPs du cours de Conception d'Applications Réparties
+
+Modules disponibles
+# annuaire: Implémentation d'un annuaire réparti utilisant des souches/squelettes TCP.
