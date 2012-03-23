@@ -11,33 +11,37 @@ class AnnuaireSkel(port: Int, delegate: IAnnuaire) {
   }
 
   class AnnuaireClient(socket: Socket) extends Runnable {
-    lazy val input = new BufferedReader(new InputStreamReader(socket.getInputStream))
-    lazy val output = new DataOutputStream(socket.getOutputStream)
+    lazy val in = new BufferedReader(new InputStreamReader(socket.getInputStream))
+    lazy val out = new DataOutputStream(socket.getOutputStream)
 
     def run {
-      def send[T](data: T) = output writeBytes data.toString + "\n"
+      def envoyer[T](data: T) = out writeBytes data.toString + "\n"
 
       while (true) {
-        val in = input.readLine
-        if (in != null) {
-          val request = in split ";"
+        val requete = in.readLine
+        if (requete != null) {
+          val request = requete split ";"
           request(0) match {
-            case "AJOUTER" => send(delegate.ajouter(request(1), Adresse decode request(2)))
-            case "RETIRER" => send(delegate.retirer(request(1)))
-            case "MODIFIER" => send(delegate.modifier(request(1), Adresse decode request(2)))
+            case "AJOUTER" =>
+              envoyer(delegate.ajouter(request(1), Adresse decode request(2)))
+            case "RETIRER" =>
+              envoyer(delegate.retirer(request(1)))
+            case "MODIFIER" =>
+              envoyer(delegate.modifier(request(1), Adresse decode request(2)))
             case "LISTER" => {
-              val res = delegate.lister
-              send(res.size)
-              res foreach { send(_) }
+              val liste = delegate.lister
+              envoyer(liste.size)
+              liste foreach { envoyer(_) }
             }
-            case "CHERCHER" => delegate chercher request(1) match {
-              case None => send(false)
-              case Some(x) => {
-                send(true)
-                send(x.encode)
+            case "CHERCHER" =>
+              delegate chercher request(1) match {
+                case None => envoyer(false)
+                case Some(x) => {
+                  envoyer(true)
+                  envoyer(x.encode)
+                }
               }
-            }
-            case x => println("[ERREUR] La méthode suivante n'est pas supportée : " + x)
+            case x => println("[ERREUR] Méthode non supportée : " + x)
           }
         }
       }

@@ -16,16 +16,21 @@ class AnnuaireImpl extends IAnnuaire {
     if (adresses contains adLogique) {
       adresses -= adLogique
       true
-    } else false
+    } else
+      false
 
   def modifier(adLogique: String, adPhysique: Adresse) =
     if (adresses contains adLogique) {
       adresses += adLogique -> adPhysique
       true
-    } else false
+    } else
+      false
 
   def lister = adresses.keys
 
   def chercher(adLogique: String) =
-    if (adresses contains adLogique) Some(adresses(adLogique)) else None
+    if (adresses contains adLogique)
+      Some(adresses(adLogique))
+    else
+      None
 }

@@ -10,4 +10,7 @@ object Client extends Application {
   annuaire.lister foreach { adr =>
     println("=> " + adr + " = " + annuaire.chercher(adr).get)
   }
+  
+  annuaire retirer "Google Search"
+  annuaire retirer "FTP Lille!"
 }
